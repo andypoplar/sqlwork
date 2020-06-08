@@ -6,7 +6,8 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
+    roleToken: ''
   }
 }
 
@@ -24,6 +25,9 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_ROLETOKEN: (state, roleToken) => {
+    state.roleToken = roleToken
   }
 }
 
@@ -61,6 +65,13 @@ const actions = {
       }).catch(error => {
         reject(error)
       })
+    })
+  },
+
+  setRoleToken({ commit, state }, roleToken) {
+    return new Promise((resolve, reject) => {
+      commit('SET_ROLETOKEN', roleToken)
+      resolve('success')
     })
   },
 

@@ -28,11 +28,20 @@ export default {
   components: { SidebarItem, Logo },
   computed: {
     ...mapGetters([
-      'sidebar'
+      'sidebar',
+      'roleToken'
     ]),
+
     routes() {
-      return this.$router.options.routes
+      return this.$router.options.routes.filter(item => {
+        if (this.roleToken) {
+          return item
+        } else {
+          return !item.meta || !item.meta.roles
+        }
+      })
     },
+
     activeMenu() {
       const route = this.$route
       const { meta, path } = route
