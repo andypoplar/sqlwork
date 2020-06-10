@@ -79,6 +79,12 @@ export const constantRoutes = [
         name: 'detailFile',
         component: () => import('@/views/detailfile/index'),
         meta: { title: '文件详情', icon: 'link' }
+      },
+      {
+        path: 'findfile',
+        name: 'findfile',
+        component: () => import('@/views/findfile/index'),
+        meta: { title: '文件查询', icon: 'table' }
       }
     ]
   },
