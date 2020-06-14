@@ -34,7 +34,7 @@ export default {
 
     routes() {
       return this.$router.options.routes.filter(item => {
-        if (this.roleToken) {
+        if (this.roleToken === 'admin') {
           return item
         } else {
           return !item.meta || !item.meta.roles

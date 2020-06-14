@@ -1,5 +1,5 @@
 <template>
-  <div class="updataFile">
+  <div class="sendfile">
     <div class="container">
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="文件上传">
@@ -7,35 +7,28 @@
             class="upload-demo"
             drag
             action="http://10.187.1.177:8080/file/uploadfile"
-            multiple
             :on-success="uploadFileSuccess"
           >
             <i class="el-icon-upload" />
             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
           </el-upload>
         </el-form-item>
 
         <el-form-item label="文件标题">
-          <el-input v-model="form.title" />
+          <el-input v-model="form.filetitle" />
         </el-form-item>
 
         <el-form-item label="文件说明">
-          <el-input v-model="form.introduce" type="textarea" />
+          <el-input v-model="form.filedecrition" type="textarea" />
         </el-form-item>
 
-        <el-form-item label="选择时间">
-          <el-date-picker
-            v-model="form.createtime"
-            type="date"
-            placeholder="选择日期"
-            format="yyyy 年 MM 月 dd 日"
-            value-format="yyyy-MM-dd"
-          />
+        <el-form-item label="收件人">
+          <el-input v-model="form.receivephone" placeholder="请输入收件人手机号" />
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="handleSubmit">立即上传</el-button>
+          <el-button type="primary" @click="handleSend">立即发送</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -43,48 +36,46 @@
 </template>
 
 <script>
-import { upload } from '@/api/file'
+import { sendMessage } from '@/api/message'
 import { notice } from '@/utils/notice'
 import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
       form: {
-        title: '',
-        introduce: '',
-        createtime: '',
-        filepath: '',
-        userid: ''
+        senderid: '',
+        filetitle: '',
+        filedecrition: '',
+        receivephone: '',
+        filepath: ''
       }
     }
   },
-
   computed: {
     ...mapGetters(['userid'])
   },
   mounted() {
-    this.form.userid = this.userid
+    this.form.senderid = this.userid
   },
   methods: {
-    handleSubmit() {
-      upload(this.form).then(res => {
-        notice(this, '成功', '上传成功', 'success')
+    handleSend() {
+      sendMessage(this.form).then(response => {
+        console.log(response)
+        notice(this, '成功', '发送成功', 'success')
       }, reason => {
-        notice(this, '失败', '上传失败', 'warning')
+        notice(this, '失败', '发送失败', 'warning')
       })
     },
 
-    uploadFileSuccess(item) {
-      console.log(item)
-      console.log(item.result + this.userid)
-      this.form.filepath = item.result
+    uploadFileSuccess(value) {
+      this.form.filepath = value.result
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.updataFile{
+.sendfile{
   padding: 50px;
   .container{
     width: 500px;
@@ -94,7 +85,7 @@ export default {
 
 // reset element style
 <style lang="scss">
-.updataFile{
+.sendfile{
   .el-upload-dragger{
     width: 200px;
     height: 150px;

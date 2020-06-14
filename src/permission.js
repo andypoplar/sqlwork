@@ -26,24 +26,38 @@ router.beforeEach(async(to, from, next) => {
       next({ path: '/' })
       NProgress.done()
     } else {
-      const hasGetUserInfo = store.getters.name
-      if (hasGetUserInfo) {
+      const hasGetUserRole = store.getters.roleToken
+      if (hasGetUserRole) {
         next()
       } else {
         try {
           // get user info
-          const userinfo = await store.dispatch('user/getInfo')
-          if (userinfo.name) {
-            const setResult = await store.dispatch('user/setRoleToken', 'admin')
-            console.log(setResult)
+          // const userinfo = await store.dispatch('user/login')
+          const userinfo = store.getters.userinfo
+
+          // const userinfo = { 'isavaiable': 1, 'type_flag': 1 }
+
+          // user is avaiable
+          if (userinfo.isavaiable === 1) {
+            // user is admin or editor
+            if (userinfo.type_flag === 1) {
+              await store.dispatch('user/setRoleToken', 'admin')
+            } else {
+              await store.dispatch('user/setRoleToken', 'editor')
+            }
+          } else {
+            throw '你已被封号'
           }
-          console.log(userinfo)
-          next()
+
+          next({ ...to, replace: true })
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
+
           Message.error(error || 'Has Error')
+
           next(`/login?redirect=${to.path}`)
+
           NProgress.done()
         }
       }

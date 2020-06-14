@@ -25,3 +25,7 @@ export function validUsername(str) {
 export function validPassword(str) {
   return str.trim().length >= 6
 }
+
+export function validPhone(str) {
+  return /^[1]([3-9])[0-9]{9}$/.test(str)
+}

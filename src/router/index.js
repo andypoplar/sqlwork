@@ -62,29 +62,35 @@ export const constantRoutes = [
   },
 
   {
-    path: '/fileManage',
+    path: '/filemanage',
     component: Layout,
-    redirect: '/fileManage/updatafile',
-    name: 'fileManage',
+    redirect: '/filemanage/updatafile',
+    name: 'filemanage',
     meta: { title: '文件管理', icon: 'example' },
     children: [
       {
-        path: 'updataFile',
-        name: 'updataFile',
+        path: 'updatafile',
+        name: 'updatafile',
         component: () => import('@/views/updatafile/index'),
         meta: { title: '上传文件', icon: 'form' }
       },
       {
-        path: 'detailFile',
-        name: 'detailFile',
-        component: () => import('@/views/detailfile/index'),
-        meta: { title: '文件详情', icon: 'link' }
+        path: 'messagelist',
+        name: 'messagelist',
+        component: () => import('@/views/messagelist/index'),
+        meta: { title: '消息列表', icon: 'message' }
+      },
+      {
+        path: 'sendfile',
+        name: 'sendfile',
+        component: () => import('@/views/sendfile/index'),
+        meta: { title: '发送文件', icon: 'link' }
       },
       {
         path: 'findfile',
         name: 'findfile',
         component: () => import('@/views/findfile/index'),
-        meta: { title: '文件查询', icon: 'table' }
+        meta: { title: '文件查询', icon: 'search' }
       }
     ]
   },

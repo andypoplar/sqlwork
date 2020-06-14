@@ -6,8 +6,7 @@
       <div class="content">
         <div class="content-form">
           <div class="username">
-            <el-input v-model.trim="userForm.username" placeholder="姓名" @input.native="checkUsername" />
-            <span v-show="userValue" class="notice">{{ noticeUser }}</span>
+            <el-input v-model.trim="userForm.name" placeholder="姓名" @input="checkUsername" />
           </div>
 
           <div class="username">
@@ -19,7 +18,7 @@
           </div>
 
           <div class="username">
-            <el-input v-model.trim="userForm.tag" placeholder="个性签名" />
+            <el-input v-model.trim="userForm.introduce" placeholder="个性签名" />
           </div>
 
           <div class="email">
@@ -31,20 +30,10 @@
               v-model.trim="userForm.password"
               placeholder="密码"
               type="password"
-              @input.native="checkPassword"
+              @input="checkPassword"
             />
-            <span v-show="passValue" class="notice">{{ noticePass }}</span>
           </div>
-          <div class="password">
-            <el-input
-              v-model.trim="userForm.repassword"
-              placeholder="再次输入密码"
-              type="password"
-              @input.native="recheckPassword"
-            />
-            <span v-show="repassValue" class="notice">{{ renoticePass }}</span>
-          </div>
-
+          <span v-if="passValue" class="notice">密码请设置在6位以上</span>
           <div class="code">
             <el-button type="primary" class="registerbtn" @click="register">注册</el-button>
           </div>
@@ -59,30 +48,23 @@
 </template>
 
 <script>
-import { validUsername, validPassword } from '@/utils/validate'
+import { validPassword } from '@/utils/validate'
+import { notice } from '@/utils/notice'
 import { register } from '@/api/user'
 export default {
   name: 'Register',
   data() {
     return {
       userForm: {
-        username: '',
+        name: '',
         password: '',
-        repassword: '',
         sex: '',
         age: '',
-        tag: '',
+        introduce: '',
         phone: ''
       },
-      noticeUser: '用户名请设置在4-16位，并且由数字字母-_组成,不包括空格',
-      noticePass: '用户名请设置在6-16位，并且由数字字母-_组成,不包括空格',
-      renoticePass: '两次输入密码不一致',
       userValue: false,
-      passValue: false,
-      repassValue: false,
-      disabled: false,
-      num: 61,
-      isSend: false
+      passValue: false
     }
   },
   computed: {
@@ -97,13 +79,10 @@ export default {
   },
   methods: {
     checkUsername() {
-      if (!validUsername(this.userForm.username)) {
-        this.userValue = true
-        if (this.userForm.username === '') {
-          this.userValue = false
-        }
-      } else {
+      if (this.userForm.name.trim().length >= 2) {
         this.userValue = false
+      } else {
+        this.userValue = true
       }
     },
 
@@ -118,43 +97,16 @@ export default {
       }
     },
 
-    recheckPassword() {
-      if (this.userForm.password !== this.userForm.repassword) {
-        this.repassValue = true
-        if (this.userForm.repassword === '') {
-          this.repassValue = false
-        }
-      } else {
-        this.repassValue = false
-      }
-    },
-
-    warning(val) {
-      this.$notify({
-        title: 'warning',
-        message: val,
-        type: 'warning'
-      })
-    },
-
-    success(val) {
-      this.$notify({
-        title: 'success',
-        message: val,
-        type: 'success'
-      })
-    },
-
     register() {
       if (this.userInfo) {
         register(this.userForm).then(response => {
-          if (response.code === 0) {
-            this.success(response.msg)
+          if (response.success) {
+            notice(this, '成功', '注册成功', 'success')
             this.clearData()
           }
         })
       } else {
-        this.warning('请按要求填写完整信息')
+        notice(this, '失败', '请按要求填写信息', 'warning')
       }
     },
 
@@ -166,21 +118,6 @@ export default {
 
     login() {
       this.$router.push('/login')
-    },
-
-    changeBtn() {
-      this.disabled = true
-      const count = setInterval(() => {
-        if (this.num === 0) {
-          this.disabled = false
-          clearInterval(count)
-          this.num = 61
-          this.isSend = false
-        } else {
-          this.isSend = true
-          this.num--
-        }
-      }, 1000)
     }
   }
 }
@@ -229,7 +166,7 @@ export default {
 .register .container .content .notice {
   color: red;
   font-size: 12px;
-  margin-left: 5px;
+  margin-left: 10px;
 }
 
 .register .content div {

@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, logout } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -7,7 +7,9 @@ const getDefaultState = () => {
     token: getToken(),
     name: '',
     avatar: '',
-    roleToken: ''
+    roleToken: '',
+    userid: '',
+    userinfo: ''
   }
 }
 
@@ -28,18 +30,28 @@ const mutations = {
   },
   SET_ROLETOKEN: (state, roleToken) => {
     state.roleToken = roleToken
+  },
+  SET_USERID: (state, userid) => {
+    state.userid = userid
+  },
+  SET_USERINFO: (state, userinfo) => {
+    state.userinfo = userinfo
   }
 }
 
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { phone, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
+      login({ phone: phone.trim(), password: password }).then(res => {
+        const { result } = res
+        commit('SET_TOKEN', result.token)
+        commit('SET_USERID', result.id)
+        commit('SET_NAME', result.name)
+        commit('SET_USERINFO', result)
+        commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
+        setToken(result.token)
         resolve()
       }).catch(error => {
         reject(error)
@@ -48,25 +60,24 @@ const actions = {
   },
 
   // get user info
-  getInfo({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
+  // getInfo({ commit, state }) {
+  //   return new Promise((resolve, reject) => {
+  //     getInfo(state.token).then(response => {
+  //       const { data } = response
 
-        if (!data) {
-          reject('Verification failed, please Login again.')
-        }
+  //       if (!data) {
+  //         reject('Verification failed, please Login again.')
+  //       }
 
-        const { name, avatar } = data
+  //       const { avatar } = data
 
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
+  //       commit('SET_AVATAR', avatar)
+  //       resolve(data)
+  //     }).catch(error => {
+  //       reject(error)
+  //     })
+  //   })
+  // },
 
   setRoleToken({ commit, state }, roleToken) {
     return new Promise((resolve, reject) => {

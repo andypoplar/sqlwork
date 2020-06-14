@@ -6,15 +6,15 @@
         <h3 class="title">My Sun</h3>
       </div>
 
-      <el-form-item prop="username">
+      <el-form-item prop="phone">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
+          ref="phone"
+          v-model="loginForm.phone"
+          placeholder="手机号"
+          name="phone"
           type="text"
           tabindex="1"
           auto-complete="on"
@@ -30,7 +30,7 @@
           ref="password"
           v-model="loginForm.password"
           :type="passwordType"
-          placeholder="Password"
+          placeholder="密码"
           name="password"
           tabindex="2"
           auto-complete="on"
@@ -46,7 +46,7 @@
       <el-button type="info" style="width:100%;margin-bottom:20px;margin-left:0px" @click.native.prevent="handleRegister">Register</el-button>
 
       <!-- <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
+        <span style="margin-right:20px;">phone: admin</span>
         <span> password: any</span>
       </div> -->
 
@@ -62,25 +62,25 @@ export default {
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
-        callback(new Error('The password can not be less than 4 digits'))
+        callback(new Error('手机号为11位数字'))
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+        callback(new Error('密码不可以少于6位'))
       } else {
         callback()
       }
     }
     return {
       loginForm: {
-        username: '',
+        phone: '',
         password: ''
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        phone: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,
