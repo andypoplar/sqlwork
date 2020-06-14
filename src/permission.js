@@ -46,14 +46,15 @@ router.beforeEach(async(to, from, next) => {
               await store.dispatch('user/setRoleToken', 'editor')
             }
           } else {
-            throw '你已被封号'
+            // throw '你已被封号'
+            const errorTag = '您已被封号'
+            throw errorTag
           }
 
           next({ ...to, replace: true })
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
-
           Message.error(error || 'Has Error')
 
           next(`/login?redirect=${to.path}`)
